@@ -20,9 +20,9 @@ function setup() {
 function collision(ball1, ball2) {
     eB = calcEB(ball1, ball2)
     eA = calcEA(eB)
-    console.log(eB, eA);
-    ball1.v = eB
-    ball2.v = eA
+    console.log(eB, eA)
+    ball2.v = eB
+    ball1.v = eA
 }
 
 //Fonction chargée de gérer les collisions. 
