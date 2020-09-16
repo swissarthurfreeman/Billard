@@ -16,3 +16,13 @@ function distance(ball1, ball2) {
 function theta(ball1, ball2) {
     return Math.asin(Math.abs( (ball1.r)[1] - (ball2.r)[1] ) / distance(ball1, ball2) )
 }
+
+function calcEB(ball1, ball2) {
+    let norm = distance(ball1, ball2)
+    console.log(norm)
+    return [ ((ball1.r)[0] - (ball2.r)[0]) / norm, ((ball1.r)[1] - (ball2.r[1])) / norm ]
+}
+
+function calcEA(e1) {
+    return [e1[1], -e1[0]]
+}
