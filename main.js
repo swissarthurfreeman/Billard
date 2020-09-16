@@ -18,11 +18,11 @@ function setup() {
 }
 
 function collision(ball1, ball2) {
-    eB = calcEB(ball1, ball2)
-    eA = calcEA(ball1, ball2)
-    console.log(eB, eA)
-    ball2.v = eB
-    ball1.v = eA
+    eB = calcEB(ball1, ball2);
+    eA = calcEA(ball1, ball2);
+    console.log(eB, eA);
+    ball2.v = eB;
+    ball1.v = eA;
 }
 
 //Fonction chargée de gérer les collisions. 

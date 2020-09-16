@@ -18,11 +18,11 @@ function calcEB(ball1, ball2) {
 }
 
 function phi(ball1, ball2) {
-    return Math.asin(( (ball1.r)[1] - (ball2.r)[1] ) / distance(ball1, ball2) )
+    return Math.asin(( (ball1.r)[0] - (ball2.r)[0] ) / distance(ball1, ball2) )
 }
 
 function calcEA(ball1, ball2) {
     let angle = phi(ball1, ball2)
     //return [e1[1], -e1[0]]
-    return [(5/7)*Math.sin(angle)*Math.cos(angle), (5/7)*Math.sin(angle)]
+    return [(5/7)*Math.sin(angle)*Math.cos(angle), (5/7)*Math.sin(angle) ]
 }
