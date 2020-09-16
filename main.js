@@ -19,7 +19,7 @@ function setup() {
 
 function collision(ball1, ball2) {
     eB = calcEB(ball1, ball2)
-    eA = calcEA(eB)
+    eA = calcEA(ball1, ball2)
     console.log(eB, eA)
     ball2.v = eB
     ball1.v = eA
@@ -35,6 +35,8 @@ function collide() {
                 console.log("Collision detected");
             }
         }
+        //Rajouter collisions avec le bord.
+        //if ((balls[i]).r)[1] > 600 ) or
     }
 }
 
