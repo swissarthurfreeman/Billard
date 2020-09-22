@@ -1,7 +1,7 @@
 //Variables Globales (à encapsuler)
 let balls = [];
 let radius = 40;
-let nbBalles = 16; //Donc 15 balles, car i < nbBalles
+let nbBalles = 51; //Donc 15 balles, car i < nbBalles
 
 //Setup est appelé qu'une seule fois. 
 function setup() {
@@ -14,7 +14,7 @@ function setup() {
         balls.push(new TBall( (randPosition())[0], (randPosition())[1], getRandomArbitrary(-1,1), getRandomArbitrary(-1,1) ) )
     } 
 
-    (balls[0]).v = [4, 4];
+    (balls[0]).v = [8, 8];
     (balls[0]).r = [4, 4]
   
 }
