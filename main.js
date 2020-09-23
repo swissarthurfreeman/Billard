@@ -4,43 +4,33 @@
 //Variables Globales (à encapsuler)
 let balls = [];
 let height = 40; //height est le double du rayon.
-let nbBalles = 15; //Donc 15 balles, car i < nbBalles
-let coeff = 0.03;
+let nbBalles = 16; //Donc 15 balles, car i < nbBalles
+let coeff = 0.017;
 
 //Setup est appelé qu'une seule fois. 
 function setup() {
     createCanvas(800,600);
     background(0, 255, 0);
-    /*
-    for (let i = 0; i < nbBalles; i++) {
-        [x,y] = genPos(i);
-        balls[i] = new TBall(x, y, 0, 0)
-    } */
 
-    let v_ini = [400, 300];
-    let eps = [height*0.90, height*0.90];
-    let e = [height*0.90, -height*0.90];
+    let r_ini = [400, 300];
+    let c = 1 / 1.3;
+    let eps = [height*c, height*c];
+    let e = [height*c, -height*c];
 
+    //La balle 0 est la balle blance.
+    balls[0] = new TBall(50, 275, 10, 0);
+
+    //Ce code permet de créer le triangle de balles.
     let p = 0; let v;
-    for (let i = 4; i >= 0; i--) {
-
-        v = vecSum(v_ini, [p*eps[0], p*eps[1]]); 
+    for (let i = 5; i >= 1; i--) {
+        v = vecSum(r_ini, [p*eps[0], p*eps[1]]); 
         p++;
-
-        for (let k = 0; k <= i; k++) {
-
-            let v_f = vecSum(v, [k*e[0], k*e[1]] )
-
-            console.log(v_f);
-            
-            balls.push(new TBall( v_f[0], v_f[1], 0, 0 ) );
+        for (let k = 1; k <= i; k++) {
+            let r_f = vecSum(v, [k*e[0], k*e[1]] )
+            balls.push(new TBall( r_f[0], r_f[1], 0, 0 ) );
         }
         
     }
-
-   
-    (balls[0]).v = [10, 0];
-    (balls[0]).r = [50, 275]
 }
 
 //Ceci est entièrement basé sur les équations tirées d'ici : 
@@ -92,7 +82,7 @@ function collide() {
 function draw() {
     //Dessiner les ellipses pour chaque balle.
     background(0, 255, 0)
-    //collide();
+    collide();
 
     for (let i = 0; i < nbBalles; i++) {
         
@@ -112,11 +102,13 @@ function draw() {
         
         //Mise à jour des vitesses avec frottement. 
         for (let p = 0; p < 2; p++) {
-            if ( (balls[i].v)[p] >= coeff) { //On soustrait coeff au deux composantes de la vitesse.
+            if (  (balls[i].v)[p] > 0) { //On soustrait coeff au deux composantes de la vitesse.
                 (balls[i].v)[p] = (balls[i].v)[p] - coeff;
+            } else if ( (balls[i].v)[p] < 0 ) {
+                (balls[i].v)[p] = (balls[i].v)[p] + coeff;
             }
             //Si la vitesse est négligeable, elle devient nulle.
-            if ((balls[p].v)[p] <= coeff) {
+            if (Math.abs( (balls[p].v)[p] ) <= coeff) {
                 (balls[p].v)[p] = 0;
             }
         }  
