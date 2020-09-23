@@ -1,7 +1,8 @@
 //Variables Globales (à encapsuler)
 let balls = [];
-let radius = 40;
-let nbBalles = 51; //Donc 15 balles, car i < nbBalles
+let height = 40; //height est le double du rayon.
+let nbBalles = 16; //Donc 15 balles, car i < nbBalles
+let coeff = 0.03;
 
 //Setup est appelé qu'une seule fois. 
 function setup() {
@@ -9,13 +10,11 @@ function setup() {
     background(0, 255, 0)
     
     for (let i = 0; i < nbBalles; i++) {
-
-        console.log(getRandomArbitrary(1,4), getRandomArbitrary(1,4));
         balls.push(new TBall( (randPosition())[0], (randPosition())[1], getRandomArbitrary(-1,1), getRandomArbitrary(-1,1) ) )
     } 
 
     (balls[0]).v = [8, 8];
-    (balls[0]).r = [4, 4]
+    (balls[0]).r = [50, 50]
   
 }
 
@@ -37,19 +36,27 @@ function collision(ball1, ball2) {
     ball1.v = vecSum(v1n_pvec, v1t_pvec); ball2.v = vecSum(v2n_pvec, v2t_pvec);
 }
 
+function collideBorder(ball) {
+    
+    if ( (ball.r)[1] - height/2 <= 0 || (ball.r)[1] + height/2 >= 600) {
+        console.log("detected");
+        ball.v = [(ball.v)[0], -(ball.v)[1]]; 
+    } else if ((ball.r)[0] - height/2 <= 0 || (ball.r)[0] + height/2 >= 800) {
+        ball.v = [-(ball.v)[0], (ball.v)[1] ];
+    }
+}
 //Fonction chargée de gérer les collisions. 
 //Détecte une même collisions plusieurs fois à chaque appel, pas le plus efficace.
 function collide() {
     for (let i = 0; i < nbBalles; i++) {
         for (let k = i+1; k < nbBalles; k++) {
-            if (distance(balls[i], balls[k]) < radius) {
+            if (distance(balls[i], balls[k]) < height) {
                 collision(balls[i], balls[k]) //To implement.
                 //console.log("Collision detected");
             }
         }
-        //Rajouter collisions avec le bord.
-        //if ((balls[i]).r)[1] > 600 ) or
-    }
+        
+    }  
 }
 
 //added comment
@@ -62,13 +69,27 @@ function draw() {
 
     for (let i = 0; i < nbBalles; i++) {
 
+        collide();
+        collideBorder(balls[i]);
+
+        //Mise à jour des positions avec vitesse.
         (balls[i].r)[0] = (balls[i].r)[0] + (balls[i].v)[0];
         (balls[i].r)[1] = (balls[i].r)[1] + (balls[i].v)[1];
         
-        ellipse( (balls[i].r)[0], (balls[i].r)[1], radius, radius)
+        ellipse( (balls[i].r)[0], (balls[i].r)[1], height)
         
         text(i.toString(), (balls[i].r)[0], (balls[i].r)[1])
         
+        for (let p = 0; p < 2; p++) {
+            if ( (balls[i].v)[p] >= coeff) {
+                (balls[i].v)[p] = (balls[i].v)[p] - coeff;
+            }
+            if ((balls[p].v)[p] <= coeff) {
+                (balls[p].v)[p] = 0;
+            }
+        }
         
+
+                
     }
 }

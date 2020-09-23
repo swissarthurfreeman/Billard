@@ -1,10 +1,11 @@
+height = 40;
 //Unité qui garde les fonctions importantes, pour géométrie vectorielle et utilités mathématiques.
 function getRandomArbitrary(min, max) {
     return Math.random() * (max - min) + min;
 }
 
 function randPosition() {    
-    return [getRandomArbitrary(0,800), getRandomArbitrary(0,600)];
+    return [getRandomArbitrary(height/2,800 -height/2), getRandomArbitrary(height / 2,600 - height / 2)];
 }
 
 //distance euclidienne entre la balle 1 et 2. 
