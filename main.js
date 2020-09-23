@@ -1,24 +1,50 @@
+//Jeu de Billard développé par Arthur Freeman, Université de Genève
+//Projet personnel afin d'apprendre à manier git et JavaScript.
+
 //Variables Globales (à encapsuler)
 let balls = [];
 let height = 40; //height est le double du rayon.
-let nbBalles = 16; //Donc 15 balles, car i < nbBalles
+let nbBalles = 15; //Donc 15 balles, car i < nbBalles
 let coeff = 0.03;
 
 //Setup est appelé qu'une seule fois. 
 function setup() {
-    createCanvas(800,600)
-    background(0, 255, 0)
-    
+    createCanvas(800,600);
+    background(0, 255, 0);
+    /*
     for (let i = 0; i < nbBalles; i++) {
-        balls.push(new TBall( (randPosition())[0], (randPosition())[1], getRandomArbitrary(-1,1), getRandomArbitrary(-1,1) ) )
-    } 
+        [x,y] = genPos(i);
+        balls[i] = new TBall(x, y, 0, 0)
+    } */
 
-    (balls[0]).v = [8, 8];
-    (balls[0]).r = [50, 50]
-  
+    let v_ini = [400, 300];
+    let eps = [height*0.90, height*0.90];
+    let e = [height*0.90, -height*0.90];
+
+    let p = 0; let v;
+    for (let i = 4; i >= 0; i--) {
+
+        v = vecSum(v_ini, [p*eps[0], p*eps[1]]); 
+        p++;
+
+        for (let k = 0; k <= i; k++) {
+
+            let v_f = vecSum(v, [k*e[0], k*e[1]] )
+
+            console.log(v_f);
+            
+            balls.push(new TBall( v_f[0], v_f[1], 0, 0 ) );
+        }
+        
+    }
+
+   
+    (balls[0]).v = [10, 0];
+    (balls[0]).r = [50, 275]
 }
 
-//Ceci est entièrement basé sur les équations tirées d'ici : https://www.vobarian.com/collisions/2dcollisions2.pdf
+//Ceci est entièrement basé sur les équations tirées d'ici : 
+//https://www.vobarian.com/collisions/2dcollisions2.pdf
 function collision(ball1, ball2) {
     n = [ (ball1.r)[0] - (ball2.r)[0], (ball1.r)[1] - (ball2.r)[1] ];
     un = [n[0] /  vecNorm(n), n[1] / vecNorm(n) ] ;
@@ -36,8 +62,10 @@ function collision(ball1, ball2) {
     ball1.v = vecSum(v1n_pvec, v1t_pvec); ball2.v = vecSum(v2n_pvec, v2t_pvec);
 }
 
+//Fonction gérant les collisions des balles avec le bord.
 function collideBorder(ball) {
-    
+    //height / 2 est le rayon des balles. On traite cas par cas en fonction de
+    //collisions entre haut et bas et collision droite et gauche.
     if ( (ball.r)[1] - height/2 <= 0 || (ball.r)[1] + height/2 >= 600) {
         console.log("detected");
         ball.v = [(ball.v)[0], -(ball.v)[1]]; 
@@ -64,32 +92,33 @@ function collide() {
 function draw() {
     //Dessiner les ellipses pour chaque balle.
     background(0, 255, 0)
-    
-    collide();
+    //collide();
 
     for (let i = 0; i < nbBalles; i++) {
+        
+        //Collide doit être appelé dans draw et dans ce for pour que ça détecte tout.
+        collide(); 
 
-        collide();
         collideBorder(balls[i]);
 
         //Mise à jour des positions avec vitesse.
         (balls[i].r)[0] = (balls[i].r)[0] + (balls[i].v)[0];
         (balls[i].r)[1] = (balls[i].r)[1] + (balls[i].v)[1];
         
+        //Ellipse est natif à p5js, ellipse(x, y, width, height).
         ellipse( (balls[i].r)[0], (balls[i].r)[1], height)
         
         text(i.toString(), (balls[i].r)[0], (balls[i].r)[1])
         
+        //Mise à jour des vitesses avec frottement. 
         for (let p = 0; p < 2; p++) {
-            if ( (balls[i].v)[p] >= coeff) {
+            if ( (balls[i].v)[p] >= coeff) { //On soustrait coeff au deux composantes de la vitesse.
                 (balls[i].v)[p] = (balls[i].v)[p] - coeff;
             }
+            //Si la vitesse est négligeable, elle devient nulle.
             if ((balls[p].v)[p] <= coeff) {
                 (balls[p].v)[p] = 0;
             }
-        }
-        
-
-                
+        }  
     }
 }

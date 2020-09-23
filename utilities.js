@@ -21,6 +21,6 @@ function dotProd(a, b) {
     return a[0]*b[0] + a[1]*b[1];
 }
 
-function vecSum(a, b) {
-    return [a[0] + b[0], a[1] + b[1] ];
+function vecSum(a, b) { //WTF js.
+    return [a[0] - (-b[0]) , a[1] - (-b[1])  ];
 }
