@@ -3,27 +3,28 @@
 
 //Variables Globales (à encapsuler)
 let balls = [];
-let height = 40; //height est le double du rayon.
-let nbBalles = 16; //Donc 15 balles, car i < nbBalles
-let coeff = 0;
+let height = 40; //height est le double du rayon.    
+let coeff = 0.01;
 
 //Setup est appelé qu'une seule fois. 
 function setup() {
     createCanvas(800,600);
     background(0, 255, 0);
-    frameRate(120);
+    frameRate(60);
 
-
-    let r_ini = [400, 300];
-    let c = 1 / 1.3;
-    let eps = [height*c, height*c];
-    let e = [height*c, -height*c];
-
+    
+    
     //La balle 0 est la balle blance.
+    //TBall(startX, startY, vitesseInitialex, vitesseInitialey)
     balls[0] = new TBall(50, 275, 20, 0);
 
-	    //Ce code permet de créer le triangle de balles.
-	    let p = 0; let v;
+    //Ce code permet de créer le triangle de balles.
+    let r_ini = [400, 300]; //position balle en tête.
+    let c = 1 / 1.3;
+    let eps = [height*c, height*c]; //vecteurs directeurs
+    let e = [height*c, -height*c]; //eps change de diagonale, e la parcourt.
+    let p = 0; let v;
+    //Beau petit algorithme cryptique, faites un schéma pour voir.
     for (let i = 5; i >= 1; i--) {
         v = vecSum(r_ini, [p*eps[0], p*eps[1]]); 
         p++;
@@ -33,7 +34,6 @@ function setup() {
         }
         
     }
-    console.log(balls.length);
 }
 
 //Ceci est entièrement basé sur les équations tirées d'ici : 
@@ -60,7 +60,6 @@ function collideBorder(ball) {
     //height / 2 est le rayon des balles. On traite cas par cas en fonction de
     //collisions entre haut et bas et collision droite et gauche.
     if ( (ball.r)[1] - height/2 <= 0 || (ball.r)[1] + height/2 >= 600) {
-        console.log("detected");
         ball.v = [(ball.v)[0], -(ball.v)[1]]; 
     } else if ((ball.r)[0] - height/2 <= 0 || (ball.r)[0] + height/2 >= 800) {
         ball.v = [-(ball.v)[0], (ball.v)[1] ];
@@ -69,8 +68,9 @@ function collideBorder(ball) {
 //Fonction chargée de gérer les collisions. 
 //Détecte une même collisions plusieurs fois à chaque appel, pas le plus efficace.
 function collide() {
-    for (let i = 0; i < nbBalles; i++) {
-        for (let k = i+1; k < nbBalles; k++) {
+    for (let i = 0; i < balls.length; i++) {
+        
+        for (let k = i+1; k < balls.length; k++) {
             if (distance(balls[i], balls[k]) <= height) {
                 //Lors d'une collision, je replace les balles si jamais elles
                 //sont l'une sur l'autre, afin d'éviter qu'elles restent collées.
@@ -86,26 +86,22 @@ function collide() {
     }  
 }
 
-//added comment
-//Draw est appelé non-stop.
+//Draw est appelé non-stop (fonction reconnue et appelée par p5js)
 function draw() {
-    //Dessiner les ellipses pour chaque balle.
-    
+    //Background efface ce qui était présent au frame précédent et on redessine le nouveau frame.
     background(0, 255, 0)
-    collide();
 
-
-    for (let i = 0; i < nbBalles; i++) {
+    for (let i = 0; i < balls.length; i++) {
         
         //Collide doit être appelé dans draw et dans ce for pour que ça détecte tout.
         collide(); 
-
         collideBorder(balls[i]);
 
         //Mise à jour des positions avec vitesse.
         (balls[i].r)[0] = (balls[i].r)[0] + (balls[i].v)[0];
         (balls[i].r)[1] = (balls[i].r)[1] + (balls[i].v)[1];
 
+        //Dessiner les ellipses pour chaque balle.
         //Ellipse est natif à p5js, ellipse(x, y, width, height).
         ellipse( (balls[i].r)[0], (balls[i].r)[1], height)
         
