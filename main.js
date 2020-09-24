@@ -5,12 +5,14 @@
 let balls = [];
 let height = 40; //height est le double du rayon.
 let nbBalles = 16; //Donc 15 balles, car i < nbBalles
-let coeff = 0.017;
+let coeff = 0;
 
 //Setup est appelé qu'une seule fois. 
 function setup() {
     createCanvas(800,600);
     background(0, 255, 0);
+    frameRate(120);
+
 
     let r_ini = [400, 300];
     let c = 1 / 1.3;
@@ -18,10 +20,10 @@ function setup() {
     let e = [height*c, -height*c];
 
     //La balle 0 est la balle blance.
-    balls[0] = new TBall(50, 275, 10, 0);
+    balls[0] = new TBall(50, 275, 20, 0);
 
-    //Ce code permet de créer le triangle de balles.
-    let p = 0; let v;
+	    //Ce code permet de créer le triangle de balles.
+	    let p = 0; let v;
     for (let i = 5; i >= 1; i--) {
         v = vecSum(r_ini, [p*eps[0], p*eps[1]]); 
         p++;
@@ -31,6 +33,7 @@ function setup() {
         }
         
     }
+    console.log(balls.length);
 }
 
 //Ceci est entièrement basé sur les équations tirées d'ici : 
@@ -68,9 +71,15 @@ function collideBorder(ball) {
 function collide() {
     for (let i = 0; i < nbBalles; i++) {
         for (let k = i+1; k < nbBalles; k++) {
-            if (distance(balls[i], balls[k]) < height) {
-                collision(balls[i], balls[k]) //To implement.
-                //console.log("Collision detected");
+            if (distance(balls[i], balls[k]) <= height) {
+                //Lors d'une collision, je replace les balles si jamais elles
+                //sont l'une sur l'autre, afin d'éviter qu'elles restent collées.
+            	let over = height - distance(balls[i], balls[k]);
+                let v = vecSum(balls[i].r, vecMultiply(balls[k].r, -1) );
+                let e = vecMultiply(v, 1/vecNorm(v));
+                balls[i].r = vecSum(balls[i].r, e);
+                balls[k].r = vecSum(balls[k].r, vecMultiply(e, -1) );
+                collision(balls[i], balls[k]); 
             }
         }
         
@@ -81,8 +90,10 @@ function collide() {
 //Draw est appelé non-stop.
 function draw() {
     //Dessiner les ellipses pour chaque balle.
+    
     background(0, 255, 0)
     collide();
+
 
     for (let i = 0; i < nbBalles; i++) {
         
@@ -94,7 +105,7 @@ function draw() {
         //Mise à jour des positions avec vitesse.
         (balls[i].r)[0] = (balls[i].r)[0] + (balls[i].v)[0];
         (balls[i].r)[1] = (balls[i].r)[1] + (balls[i].v)[1];
-        
+
         //Ellipse est natif à p5js, ellipse(x, y, width, height).
         ellipse( (balls[i].r)[0], (balls[i].r)[1], height)
         

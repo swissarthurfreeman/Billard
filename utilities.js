@@ -17,6 +17,10 @@ function vecNorm(v) {
     return Math.sqrt( v[0]*v[0] + v[1]*v[1])
 }
 
+function vecMultiply(v, lambda) {
+    return [v[0]*lambda, v[1]*lambda];
+}
+
 function dotProd(a, b) {
     return a[0]*b[0] + a[1]*b[1];
 }
