@@ -1,5 +1,10 @@
-//Jeu de Billard développé par Arthur Freeman, Université de Genève
-//Projet personnel afin d'apprendre à manier git et JavaScript.
+/********************************************************************
+* Jeu de Billard développé par Arthur Freeman, Université de Genève *
+* Projet personnel afin d'apprendre à manier git et JavaScript.     *
+*********************************************************************/
+
+//To Do : Les boules ont une vitesse minuscules même quand elles sont censées
+//être au repos.
 
 //Variables Globales (à encapsuler)
 let balls = [];
@@ -12,8 +17,6 @@ function setup() {
     background(0, 255, 0);
     frameRate(60);
 
-    
-    
     //La balle 0 est la balle blance.
     //TBall(startX, startY, vitesseInitialex, vitesseInitialey)
     balls[0] = new TBall(50, 275, 20, 0);
