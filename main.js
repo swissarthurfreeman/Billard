@@ -3,13 +3,16 @@
 * Projet personnel afin d'apprendre à manier git et JavaScript.     *
 *********************************************************************/
 
-//To Do : Les boules ont une vitesse minuscules même quand elles sont censées
-//être au repos.
+//To Do : Utiliser un branch pour faire les trous. (deuxième array holes)
+//elles ne doivent tomber dedans que si le centre de masse est dans le trou ! 
+//créer une classe trou qui hérite de balles et changer procédure collision
+//pour celle ci, call collision entre TBalles et TTrous.
+//Encapsuler toutes les fonctions dans TBalles.
 
 //Variables Globales (à encapsuler)
 let balls = [];
 let height = 40; //height est le double du rayon.    
-let coeff = 0.01;
+let coeff = 0.04;
 
 //Setup est appelé qu'une seule fois. 
 function setup() {
