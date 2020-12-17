@@ -1,4 +1,4 @@
-height = 40;
+height = 35;
 //Unité qui garde les fonctions importantes, pour géométrie vectorielle et utilités mathématiques.
 function getRandomArbitrary(min, max) {
     return Math.random() * (max - min) + min;

@@ -16,6 +16,7 @@ let height = 35; //height est le double du rayon.
 let coeff = 0.04;
 let WIDTH = 800;
 let HEIGHT = 600;
+let stick = false;
 
 //Setup est appelé qu'une seule fois. 
 function setup() {
@@ -100,19 +101,40 @@ function drawHoles(holes) {
     rect(WIDTH - 10, 0, 10, HEIGHT);
     rect(0, HEIGHT-10, WIDTH, 10);
     
-    
     for(let i=0; i < positions.length; i++) {
         ellipse(positions[i][0], positions[i][1], 40);
     }
 }
 
 function collideHoles(ball, holes) {
-    for(let i=0; i < holes.length; i++) {
+    for(let i = 0; i < holes.length; i++) {
         holeBall = {r: [holes[i][0], holes[i][1]]}
         if(distance(ball, holeBall) < height) {
             return true;
         }
     }
+}
+
+function mouseClicked() {
+    if(distance(balls[0], {r:[mouseX, mouseY]}) < height / 2) {
+        console.log("Clicked")
+        stick = true;
+    } else if(stick) {
+        //on tire la balle.
+        dist = distance(balls[0], {r:[mouseX, mouseY]})
+        v_dir = [ (balls[0].r)[0] - mouseX, (balls[0].r)[1] - mouseY]
+        v_0 = vecMultiply(v_dir, 1 / dist);
+        v_0 = vecMultiply(v_0, dist / 30);
+        console.log(v_0);
+        (balls[0].v) = v_0;
+        stick = false;
+    }
+}
+
+function summonStick() {
+    //rotate(mouseX, mouseY);
+    line(mouseX, mouseY, (balls[0].r)[0], (balls[0].r)[1]);
+    
 }
 
 //Draw est appelé non-stop (fonction reconnue et appelée par p5js)
@@ -130,11 +152,10 @@ function draw() {
 
 
         drawHoles(holes);
+
         if(collideHoles(balls[i], holes)) {
             balls.splice(i, 1);
-        }
-
-        
+        }       
 
         //Mise à jour des positions avec vitesse.
         (balls[i].r)[0] = (balls[i].r)[0] + (balls[i].v)[0];
@@ -146,6 +167,10 @@ function draw() {
         
         text(i.toString(), (balls[i].r)[0], (balls[i].r)[1])
         
+        if(stick) {
+            summonStick();
+        }
+
         //Mise à jour des vitesses avec frottement. 
         for (let p = 0; p < 2; p++) {
             if (  (balls[i].v)[p] > 0) { //On soustrait coeff au deux composantes de la vitesse.
