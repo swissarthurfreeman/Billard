@@ -8,6 +8,7 @@
 //créer une classe trou qui hérite de balles et changer procédure collision
 //pour celle ci, call collision entre TBalles et TTrous.
 //Encapsuler toutes les fonctions dans TBalles.
+//holes branch
 
 //Variables Globales (à encapsuler)
 let balls = [];
@@ -21,7 +22,6 @@ function setup() {
     frameRate(60);
 
     //La balle 0 est la balle blance.
-    //TBall(startX, startY, vitesseInitialex, vitesseInitialey)
     balls[0] = new TBall(50, 275, 20, 0);
 
     //Ce code permet de créer le triangle de balles.
