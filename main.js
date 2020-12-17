@@ -3,12 +3,10 @@
 * Projet personnel afin d'apprendre à manier git et JavaScript.     *
 *********************************************************************/
 
-//To Do : Utiliser un branch pour faire les trous. (deuxième array holes)
-//elles ne doivent tomber dedans que si le centre de masse est dans le trou ! 
+//To Do :
 //créer une classe trou qui hérite de balles et changer procédure collision
 //pour celle ci, call collision entre TBalles et TTrous.
 //Encapsuler toutes les fonctions dans TBalles.
-//holes branch
 
 //Variables Globales (à encapsuler)
 let balls = [];
@@ -25,7 +23,7 @@ function setup() {
     frameRate(60);
 
     //La balle 0 est la balle blance.
-    balls[0] = new TBall(50, 275, 20, 0);
+    balls[0] = new TBall(150, 275, 0, 0);
 
     //Ce code permet de créer le triangle de balles.
     let r_ini = [400, 300]; //position balle en tête.
@@ -96,14 +94,18 @@ function collide() {
 
 function drawHoles(holes) {
     positions = holes
+    fill(255,228,80);
+
     rect(0, 0, WIDTH, 10);
     rect(0, 0, 10, HEIGHT);
     rect(WIDTH - 10, 0, 10, HEIGHT);
     rect(0, HEIGHT-10, WIDTH, 10);
     
+    fill(0, 0, 0);
     for(let i=0; i < positions.length; i++) {
         ellipse(positions[i][0], positions[i][1], 40);
     }
+    fill(255, 255, 255);
 }
 
 function collideHoles(ball, holes) {
@@ -121,10 +123,10 @@ function mouseClicked() {
         stick = true;
     } else if(stick) {
         //on tire la balle.
-        dist = distance(balls[0], {r:[mouseX, mouseY]})
+        dis = distance(balls[0], {r:[mouseX, mouseY]})
         v_dir = [ (balls[0].r)[0] - mouseX, (balls[0].r)[1] - mouseY]
-        v_0 = vecMultiply(v_dir, 1 / dist);
-        v_0 = vecMultiply(v_0, dist / 30);
+        v_0 = vecMultiply(v_dir, 1 / dis);
+        v_0 = vecMultiply(v_0, dis / 30);
         console.log(v_0);
         (balls[0].v) = v_0;
         stick = false;
@@ -140,21 +142,23 @@ function summonStick() {
 //Draw est appelé non-stop (fonction reconnue et appelée par p5js)
 function draw() {
     //Background efface ce qui était présent au frame précédent et on redessine le nouveau frame.
-    background(0, 255, 0)
+    background(38, 189, 0)
+
     holes = [ [20, 20], [WIDTH/2, 20], [WIDTH-20, 20], 
     [20, HEIGHT-20], [WIDTH/2, HEIGHT-20], [WIDTH - 20, HEIGHT - 20]];
-
+    
+    colors = ['white', 'yellow', 'blue', 'red', 'purple', 'orange', 'green', 
+    '#800020', 'black', 'yellow', 'blue', 'red', 'purple', 'orange', 'green', '#800020'];
+    
     for (let i = 0; i < balls.length; i++) {
-        
         //collide toutes les balles entre elles.
         collide(); 
         collideBorder(balls[i]);
-
-
-        drawHoles(holes);
-
+        
         if(collideHoles(balls[i], holes)) {
-            balls.splice(i, 1);
+            (balls[i].r) = [NaN, NaN];
+            (balls[i].v) = [0, 0];
+            //balls.splice(i, 1);
         }       
 
         //Mise à jour des positions avec vitesse.
@@ -163,10 +167,18 @@ function draw() {
 
         //Dessiner les ellipses pour chaque balle.
         //Ellipse est natif à p5js, ellipse(x, y, width, height).
+        
+        fill(colors[i]);
         ellipse( (balls[i].r)[0], (balls[i].r)[1], height)
         
+
+        drawHoles(holes);
+
+        fill(0, 0, 0);
         text(i.toString(), (balls[i].r)[0], (balls[i].r)[1])
+        fill(255, 255, 255);
         
+
         if(stick) {
             summonStick();
         }
