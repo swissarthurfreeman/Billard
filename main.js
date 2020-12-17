@@ -12,12 +12,14 @@
 
 //Variables Globales (à encapsuler)
 let balls = [];
-let height = 40; //height est le double du rayon.    
+let height = 35; //height est le double du rayon.    
 let coeff = 0.04;
+let WIDTH = 800;
+let HEIGHT = 600;
 
 //Setup est appelé qu'une seule fois. 
 function setup() {
-    createCanvas(800,600);
+    createCanvas(WIDTH,HEIGHT);
     background(0, 255, 0);
     frameRate(60);
 
@@ -65,9 +67,9 @@ function collision(ball1, ball2) {
 function collideBorder(ball) {
     //height / 2 est le rayon des balles. On traite cas par cas en fonction de
     //collisions entre haut et bas et collision droite et gauche.
-    if ( (ball.r)[1] - height/2 <= 0 || (ball.r)[1] + height/2 >= 600) {
+    if ( (ball.r)[1] - height/2 <= 10 || (ball.r)[1] + height/2 >= HEIGHT - 10) {
         ball.v = [(ball.v)[0], -(ball.v)[1]]; 
-    } else if ((ball.r)[0] - height/2 <= 0 || (ball.r)[0] + height/2 >= 800) {
+    } else if ((ball.r)[0] - height/2 <= 10 || (ball.r)[0] + height/2 >= WIDTH - 10) {
         ball.v = [-(ball.v)[0], (ball.v)[1] ];
     }
 }
@@ -75,7 +77,6 @@ function collideBorder(ball) {
 //Détecte une même collisions plusieurs fois à chaque appel, pas le plus efficace.
 function collide() {
     for (let i = 0; i < balls.length; i++) {
-        
         for (let k = i+1; k < balls.length; k++) {
             if (distance(balls[i], balls[k]) <= height) {
                 //Lors d'une collision, je replace les balles si jamais elles
@@ -92,16 +93,48 @@ function collide() {
     }  
 }
 
+function drawHoles(holes) {
+    positions = holes
+    rect(0, 0, WIDTH, 10);
+    rect(0, 0, 10, HEIGHT);
+    rect(WIDTH - 10, 0, 10, HEIGHT);
+    rect(0, HEIGHT-10, WIDTH, 10);
+    
+    
+    for(let i=0; i < positions.length; i++) {
+        ellipse(positions[i][0], positions[i][1], 40);
+    }
+}
+
+function collideHoles(ball, holes) {
+    for(let i=0; i < holes.length; i++) {
+        holeBall = {r: [holes[i][0], holes[i][1]]}
+        if(distance(ball, holeBall) < height) {
+            return true;
+        }
+    }
+}
+
 //Draw est appelé non-stop (fonction reconnue et appelée par p5js)
 function draw() {
     //Background efface ce qui était présent au frame précédent et on redessine le nouveau frame.
     background(0, 255, 0)
+    holes = [ [20, 20], [WIDTH/2, 20], [WIDTH-20, 20], 
+    [20, HEIGHT-20], [WIDTH/2, HEIGHT-20], [WIDTH - 20, HEIGHT - 20]];
 
     for (let i = 0; i < balls.length; i++) {
         
-        //Collide doit être appelé dans draw et dans ce for pour que ça détecte tout.
+        //collide toutes les balles entre elles.
         collide(); 
         collideBorder(balls[i]);
+
+
+        drawHoles(holes);
+        if(collideHoles(balls[i], holes)) {
+            balls.splice(i, 1);
+        }
+
+        
 
         //Mise à jour des positions avec vitesse.
         (balls[i].r)[0] = (balls[i].r)[0] + (balls[i].v)[0];
@@ -124,6 +157,6 @@ function draw() {
             if (Math.abs( (balls[p].v)[p] ) <= coeff) {
                 (balls[p].v)[p] = 0;
             }
-        }  
+        }
     }
 }
